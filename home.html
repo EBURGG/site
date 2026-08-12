@@ -10,7 +10,6 @@
             background-color: #e3e3e3;
         }
 
-        /* Layout Grid */
         .home-layout {
             display: flex;
             max-width: 1200px;
@@ -19,7 +18,6 @@
             gap: 15px;
         }
 
-        /* Left Sidebar */
         .sidebar-left {
             width: 170px;
             flex-shrink: 0;
@@ -61,7 +59,7 @@
             color: #00a2ff;
         }
 
-        .blog-section h4, .events-section h4 {
+        .blog-section h4 {
             font-size: 11px;
             color: #757575;
             text-transform: uppercase;
@@ -80,10 +78,9 @@
             font-weight: 600;
         }
 
-        /* Main Feed */
         .main-feed {
             flex-grow: 1;
-            min-width: 0; /* Prevents flex blowout */
+            min-width: 0;
         }
 
         .welcome-header {
@@ -132,7 +129,6 @@
             font-weight: 600;
         }
 
-        /* Friends Strip */
         .friends-row {
             display: flex;
             gap: 12px;
@@ -182,7 +178,6 @@
             text-overflow: ellipsis;
         }
 
-        /* Game Grids */
         .home-games-grid {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -223,7 +218,6 @@
             margin-top: 2px;
         }
 
-        /* Right Sidebar Ads */
         .sidebar-right {
             width: 160px;
             flex-shrink: 0;
@@ -248,10 +242,9 @@
 </head>
 <body>
 
-    <!-- Header Navigation -->
     <header>
         <a href="home.html" class="logo">
-            <img src="EBURG-logo.png" alt="EBURG">
+            <img src="eburgblue.png" alt="EBURG">
         </a>
         <nav class="main-nav">
             <a href="home.html">Home</a>
@@ -268,8 +261,6 @@
     </header>
 
     <div class="home-layout">
-        
-        <!-- Left Sidebar Navigation -->
         <aside class="sidebar-left">
             <div class="user-mini-profile">
                 <img src="https://via.placeholder.com/28" alt="Avatar">
@@ -291,17 +282,10 @@
                     <a href="#">EBURG 2017 Client Update</a>
                     <div style="color: #777;">2 days ago</div>
                 </div>
-                <div class="blog-post">
-                    <a href="#">Community Catalog Submissions</a>
-                    <div style="color: #777;">1 week ago</div>
-                </div>
             </div>
         </aside>
 
-        <!-- Main Home Content Feed -->
         <main class="main-feed">
-            
-            <!-- User Welcome Banner -->
             <div class="welcome-header">
                 <div class="avatar-circle-large">
                     <img src="https://via.placeholder.com/80" alt="Avatar Profile">
@@ -309,9 +293,8 @@
                 <h1>EBURG Admin</h1>
             </div>
 
-            <!-- Friends Strip -->
             <div class="section-bar">
-                <h2>Friends (8)</h2>
+                <h2>Friends (3)</h2>
                 <a href="#" class="see-all-link">See All</a>
             </div>
             <div class="friends-row">
@@ -337,7 +320,6 @@
                 </div>
             </div>
 
-            <!-- Continue Playing Section -->
             <div class="section-bar">
                 <h2>Continue</h2>
                 <a href="#" class="see-all-link">See All &rarr;</a>
@@ -365,38 +347,13 @@
                     </div>
                 </a>
             </div>
-
-            <!-- Role-playing Section -->
-            <div class="section-bar">
-                <h2>Role-playing</h2>
-                <a href="#" class="see-all-link">See All &rarr;</a>
-            </div>
-            <div class="home-games-grid">
-                <a href="game-detail.html" class="home-game-card">
-                    <img src="https://via.placeholder.com/120" alt="Brookhaven">
-                    <div class="home-game-info">
-                        <div class="home-game-title">Brookhaven 🏡RP</div>
-                        <div class="home-game-stats">👍 89% 👤 24.1K</div>
-                    </div>
-                </a>
-                <a href="game-detail.html" class="home-game-card">
-                    <img src="https://via.placeholder.com/120" alt="Adopt Me">
-                    <div class="home-game-info">
-                        <div class="home-game-title">Adopt Me!</div>
-                        <div class="home-game-stats">👍 85% 👤 18.5K</div>
-                    </div>
-                </a>
-            </div>
-
         </main>
 
-        <!-- Right Side Ad Banner -->
         <aside class="sidebar-right">
             <div class="ad-box-vertical">
                 160x600<br>Advertisement
             </div>
         </aside>
-
     </div>
 
 </body>
