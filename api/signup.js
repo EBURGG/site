@@ -1,39 +1,35 @@
+import { Redis } from '@upstash/redis';
+
+const redis = Redis.fromEnv();
+
 export default async function handler(req, res) {
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
-    }
+    if (req.method !== 'POST') return res.status(405).end();
 
     const { username, password } = req.body;
+    if (!username || !password) return res.status(400).json({ error: "Missing fields" });
 
-    if (!username || !password) {
-        return res.status(400).json({ error: 'Username and password required' });
+    // 1. Check if username is already taken
+    const existing = await redis.get(`username:${username.toLowerCase()}`);
+    if (existing) {
+        return res.status(400).json({ error: "Username already taken" });
     }
 
-    const url = process.env.EBURG_DB_KV_REST_API_URL;
-    const token = process.env.EBURG_DB_KV_REST_API_TOKEN;
+    // 2. Increment global user ID counter (starts at 1)
+    const newUserId = await redis.incr('global_user_id');
 
-    // Check if user already exists in Redis
-    const checkUser = await fetch(`${url}/get/user:${username.toLowerCase()}`, {
-        headers: { Authorization: `Bearer ${token}` }
-    });
-    const existingData = await checkUser.json();
-
-    if (existingData.result) {
-        return res.status(400).json({ error: 'Username already taken' });
-    }
-
-    // Save user profile object to database
-    const userPayload = JSON.stringify({
+    const userData = {
+        id: newUserId,
         username: username,
-        password: password, // Note: In production, hash passwords with bcrypt
-        joined: new Date().toISOString()
-    });
+        password: password, // Note: Hash in production
+        created_at: new Date().toISOString(),
+        status: "Welcome to EBURG!"
+    };
 
-    await fetch(`${url}/set/user:${username.toLowerCase()}`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: JSON.stringify(userPayload)
-    });
+    // 3. Save key for ID (e.g. user:1)
+    await redis.set(`user:${newUserId}`, JSON.stringify(userData));
 
-    return res.status(200).json({ success: true, message: 'Account created successfully!' });
+    // 4. Save lookup key for Username -> ID mapping
+    await redis.set(`username:${username.toLowerCase()}`, newUserId);
+
+    return res.status(200).json({ success: true, userId: newUserId });
 }
