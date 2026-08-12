@@ -4,108 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile - EBURG</title>
-    
-    <!-- CSS and Site Scripts -->
     <link rel="stylesheet" href="/style.css">
     <script src="/maintenance.js"></script>
-
-    <!-- Global Image Fallback Listener -->
     <script src="/imgfix.js"></script>
 </head>
 <body>
 
-    <!-- Header Navigation Bar -->
-    <header style="padding: 15px 30px; background: #1a1a1a; color: white; display: flex; justify-content: space-between; align-items: center;">
-        <div style="font-weight: bold; font-size: 1.2rem;">EBURG</div>
-        <nav>
-            <a href="/home" style="color: white; margin-right: 15px; text-decoration: none;">Home</a>
-            <span class="user-display-name" style="color: #aaa;">Guest</span>
-        </nav>
-    </header>
+    <!-- YOUR CLASSIC HEADER & LAYOUT HERE -->
+    <div id="profile-card">
+        <h1 id="username-display">Loading...</h1>
+        <p id="user-status"></p>
+    </div>
 
-    <!-- Main Profile Card Container -->
-    <main style="max-width: 800px; margin: 40px auto; padding: 20px;">
-        <div id="profile-container" style="background: #242424; color: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
-            <div style="display: flex; align-items: center; gap: 20px;">
-                <img id="profile-avatar" src="https://raw.githubusercontent.com/EBURGG/site/refs/heads/main/placeholders/notfound.png" alt="Avatar" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; background: #333;">
-                <div>
-                    <h1 id="profile-username" style="margin: 0; font-size: 2rem;">Loading...</h1>
-                    <p id="profile-id" style="margin: 5px 0; color: #888; font-size: 0.9rem;"></p>
-                    <p id="profile-status" style="margin-top: 10px; font-style: italic; color: #ccc;">"..."</p>
-                </div>
-            </div>
-            
-            <hr style="border: 0; border-top: 1px solid #333; margin: 25px 0;">
+    <!-- Hidden 404 Container (Only triggers if user genuinely doesn't exist) -->
+    <div id="not-found-view" style="display: none; text-align: center; padding: 50px;">
+        <img src="https://raw.githubusercontent.com/EBURGG/site/refs/heads/main/placeholders/notfound.png" style="max-width: 400px; width: 100%;">
+        <h2>User Not Found</h2>
+        <a href="/home">Return Home</a>
+    </div>
 
-            <div>
-                <h3>Account Details</h3>
-                <p><strong>Member Since:</strong> <span id="profile-joined">...</span></p>
-            </div>
-        </div>
-    </main>
-
-    <!-- Profile Fetching & 404 Validation Logic -->
     <script>
-        async function loadUserProfile() {
-            // Grab the second segment from paths like /users/1/profile or /users/EBURG/profile
-            const pathSegments = window.location.pathname.split('/').filter(Boolean);
-            const userIdOrName = pathSegments[1];
+        async function validateAndLoadProfile() {
+            // Extract the user parameter from URL: /users/1/profile -> "1"
+            const parts = window.location.pathname.split('/');
+            const userIndex = parts.indexOf('users');
+            const targetId = userIndex !== -1 ? parts[userIndex + 1] : null;
 
-            if (!userIdOrName) {
-                showNotFound();
+            if (!targetId) {
+                show404();
                 return;
             }
 
             try {
-                // Fetch user data from backend API
-                const res = await fetch(`/api/get-user?id=${encodeURIComponent(userIdOrName)}`);
+                const res = await fetch(`/api/get-user?id=${encodeURIComponent(targetId)}`);
                 
-                // If API returns 404 (user doesn't exist)
                 if (!res.ok) {
-                    showNotFound();
+                    show404();
                     return;
                 }
 
-                const userData = await res.json();
+                const user = await res.json();
 
-                // Inject user info into HTML
-                document.getElementById('profile-username').innerText = userData.username || 'Unknown User';
-                document.getElementById('profile-id').innerText = `User ID: #${userData.id || 'N/A'}`;
-                document.getElementById('profile-status').innerText = `"${userData.status || 'Welcome to EBURG!'}"`;
-                
-                if (userData.created_at) {
-                    const joinDate = new Date(userData.created_at).toLocaleDateString();
-                    document.getElementById('profile-joined').innerText = joinDate;
-                } else {
-                    document.getElementById('profile-joined').innerText = 'Unknown';
-                }
+                // Update your classic profile elements
+                const nameEl = document.getElementById('username-display');
+                if (nameEl) nameEl.innerText = user.username;
 
-                document.title = `${userData.username}'s Profile - EBURG`;
+                const statusEl = document.getElementById('user-status');
+                if (statusEl) statusEl.innerText = user.status || '';
+
+                document.title = `${user.username} - Profile`;
 
             } catch (err) {
-                console.error("Error loading profile:", err);
-                showNotFound();
+                console.error("Profile load error:", err);
             }
         }
 
-        // Render custom 404 layout with your missing image if the user doesn't exist
-        function showNotFound() {
-            document.body.innerHTML = `
-                <div style="text-align: center; padding: 100px 20px; font-family: sans-serif; color: white; background: #121212; min-height: 100vh;">
-                    <img src="https://raw.githubusercontent.com/EBURGG/site/refs/heads/main/placeholders/notfound.png" style="max-width: 400px; width: 100%; border-radius: 8px;">
-                    <h2 style="margin-top: 20px; font-size: 2rem;">User Not Found</h2>
-                    <p style="color: #aaa;">The user specified does not exist in EBURG.</p>
-                    <a href="/home" style="display: inline-block; margin-top: 15px; padding: 10px 20px; background: #0074bd; color: white; text-decoration: none; border-radius: 5px;">Go back Home</a>
-                </div>
-            `;
+        function show404() {
+            const card = id => document.getElementById(id);
+            if (card('profile-card')) card('profile-card').style.display = 'none';
+            if (card('not-found-view')) card('not-found-view').style.display = 'block';
         }
 
-        // Execute function on page load
-        loadUserProfile();
-
-        // Populate header name if logged in locally
-        const currentUser = localStorage.getItem('eburg_user') || 'Guest';
-        document.querySelectorAll('.user-display-name').forEach(el => el.innerText = currentUser);
+        validateAndLoadProfile();
     </script>
 </body>
 </html>
