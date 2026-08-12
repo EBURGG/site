@@ -23,49 +23,47 @@
         <a href="/home">Return Home</a>
     </div>
 
-    <script>
-        async function validateAndLoadProfile() {
-            // Extract the user parameter from URL: /users/1/profile -> "1"
-            const parts = window.location.pathname.split('/');
-            const userIndex = parts.indexOf('users');
-            const targetId = userIndex !== -1 ? parts[userIndex + 1] : null;
+<script>
+    async function loadProfile() {
+        // Extracts "1" or "EBURG" from the URL path (/users/1/profile)
+        const matches = window.location.pathname.match(/\/users\/([^\/]+)\/profile/);
+        const userId = matches ? matches[1] : null;
 
-            if (!targetId) {
+        if (!userId) {
+            show404();
+            return;
+        }
+
+        try {
+            const res = await fetch(`/api/get-user?id=${encodeURIComponent(userId)}`);
+            if (!res.ok) {
                 show404();
                 return;
             }
 
-            try {
-                const res = await fetch(`/api/get-user?id=${encodeURIComponent(targetId)}`);
-                
-                if (!res.ok) {
-                    show404();
-                    return;
-                }
+            const data = await res.json();
 
-                const user = await res.json();
-
-                // Update your classic profile elements
-                const nameEl = document.getElementById('username-display');
-                if (nameEl) nameEl.innerText = user.username;
-
-                const statusEl = document.getElementById('user-status');
-                if (statusEl) statusEl.innerText = user.status || '';
-
-                document.title = `${user.username} - Profile`;
-
-            } catch (err) {
-                console.error("Profile load error:", err);
+            // Set text on your original HTML elements (change IDs if yours are named differently)
+            if (document.getElementById('username-display')) {
+                document.getElementById('username-display').innerText = data.username;
             }
-        }
+            if (document.getElementById('user-status')) {
+                document.getElementById('user-status').innerText = data.status || '';
+            }
 
-        function show404() {
-            const card = id => document.getElementById(id);
-            if (card('profile-card')) card('profile-card').style.display = 'none';
-            if (card('not-found-view')) card('not-found-view').style.display = 'block';
+            document.title = `${data.username} - Profile`;
+        } catch (err) {
+            show404();
         }
+    }
 
-        validateAndLoadProfile();
-    </script>
+    function show404() {
+        // Hides your profile card and shows the not found message if user isn't in DB
+        if (document.getElementById('profile-card')) document.getElementById('profile-card').style.display = 'none';
+        if (document.getElementById('not-found-view')) document.getElementById('not-found-view').style.display = 'block';
+    }
+
+    loadProfile();
+</script>
 </body>
 </html>
