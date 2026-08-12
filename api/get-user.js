@@ -8,15 +8,24 @@ export default async function handler(req, res) {
 
     let userId = id;
 
-    // If input is NOT purely numbers (e.g. "EBURG"), look up the numeric ID first
+    // If given a username (like "eburg"), look up its numeric ID
     if (isNaN(id)) {
         userId = await redis.get(`username:${id.toLowerCase()}`);
         if (!userId) return res.status(404).json({ error: "User not found" });
     }
 
-    // Retrieve user data by numeric ID
-    const user = await redis.get(`user:${userId}`);
-    if (!user) return res.status(404).json({ error: "User not found" });
+    // Fetch user key from Redis
+    let rawUser = await redis.get(`user:${userId}`);
+    if (!rawUser) return res.status(404).json({ error: "User not found" });
 
-    return res.status(200).json(typeof user === 'string' ? JSON.parse(user) : user);
+    // Handle JSON object vs String parsing safely
+    let user;
+    try {
+        user = typeof rawUser === 'string' ? JSON.parse(rawUser) : rawUser;
+    } catch (e) {
+        // Fallback if formatting has backslashes
+        user = rawUser;
+    }
+
+    return res.status(200).json(user);
 }
