@@ -4,17 +4,19 @@ const redis = Redis.fromEnv();
 
 export default async function handler(req, res) {
     const { id } = req.query;
+    if (!id) return res.status(400).json({ error: "Missing ID" });
 
-    if (!id) {
-        return res.status(400).json({ error: "Missing ID" });
+    let userId = id;
+
+    // If input is NOT purely numbers (e.g. "EBURG"), look up the numeric ID first
+    if (isNaN(id)) {
+        userId = await redis.get(`username:${id.toLowerCase()}`);
+        if (!userId) return res.status(404).json({ error: "User not found" });
     }
 
-    // Try finding user by ID or Username in Redis
-    const user = await redis.get(`user:${id}`);
+    // Retrieve user data by numeric ID
+    const user = await redis.get(`user:${userId}`);
+    if (!user) return res.status(404).json({ error: "User not found" });
 
-    if (!user) {
-        return res.status(404).json({ error: "User not found" });
-    }
-
-    return res.status(200).json(user);
+    return res.status(200).json(typeof user === 'string' ? JSON.parse(user) : user);
 }
