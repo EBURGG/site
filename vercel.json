@@ -2,6 +2,7 @@
   "cleanUrls": true,
   "rewrites": [
     { "source": "/users/:id/profile", "destination": "/profile.html" },
-    { "source": "/users/:id", "destination": "/profile.html" }
+    { "source": "/users/:id", "destination": "/profile.html" },
+    { "source": "/upgrades/paymentsystem/unavailable", "destination": "paymenterr.html" }
   ]
 }
