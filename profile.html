@@ -2,110 +2,437 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile - EBURG</title>
-    <link rel="icon" type="image/png" href="https://avatars.githubusercontent.com/u/316217684?s=400&u=2b01b96d2ad1e4f698ff1394e711e619a9a2f029&v=4">
-    <link rel="stylesheet" href="style.css">
-    <script src="maintenance.js"></script>
+    <script src="/maintenance.js"></script>
+    <link rel="icon" type="image/png" href="https://avatars.githubusercontent.com/u/316217684?s=400&v=4">
+    <link rel="stylesheet" href="/style.css">
     <style>
-        body { background-color: #e3e3e3; margin: 0; font-family: Arial, sans-serif; }
-        .profile-container { max-width: 960px; margin: 20px auto; padding: 0 10px; }
-        .profile-header-card { background: white; border: 1px solid #d6d6d6; padding: 20px; display: flex; gap: 20px; align-items: center; border-radius: 4px; }
-        .profile-avatar-box { width: 120px; height: 120px; border-radius: 50%; border: 1px solid #ccc; overflow: hidden; background: #f0f0f0; flex-shrink: 0; }
-        .profile-avatar-box img { width: 100%; height: 100%; object-fit: cover; }
-        .profile-details { flex-grow: 1; }
-        .profile-username { font-size: 28px; font-weight: bold; color: #393b3d; margin: 0 0 5px 0; }
-        .profile-status { font-size: 13px; color: #757575; font-style: italic; margin-bottom: 15px; }
-        .profile-actions { display: flex; gap: 10px; }
-        .btn-add-friend { background: #00a2ff; color: white; border: none; padding: 8px 15px; font-size: 12px; font-weight: bold; border-radius: 3px; cursor: pointer; }
-        .btn-add-friend:hover { background: #0082cc; }
-        .profile-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-top: 20px; }
-        .profile-section-card { background: white; border: 1px solid #d6d6d6; border-radius: 4px; padding: 15px; margin-bottom: 20px; }
-        .profile-section-card h3 { font-size: 16px; margin: 0 0 10px 0; border-bottom: 1px solid #eee; padding-bottom: 8px; color: #393b3d; }
-        .blurb-text { font-size: 13px; color: #555; line-height: 1.4; }
-        .stat-item { font-size: 12px; margin-bottom: 8px; color: #666; }
-        .stat-item strong { color: #333; }
+        body {
+            background-color: #e3e3e3;
+            font-family: 'Source Sans Pro', Arial, sans-serif;
+            margin: 0;
+            padding-bottom: 40px;
+            color: #333;
+        }
+
+        .profile-container {
+            max-width: 970px;
+            margin: 20px auto;
+            padding: 0 10px;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #d6d6d6;
+            border-radius: 3px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        /* --- HEADER SECTION --- */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .avatar-headshot {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 1px solid #ccc;
+            background: #f2f2f2;
+            object-fit: cover;
+        }
+        .user-info h1 {
+            font-size: 24px;
+            margin: 0 0 5px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .status-quote {
+            font-size: 13px;
+            color: #555;
+            font-style: italic;
+            margin-bottom: 12px;
+        }
+        .stats-counts {
+            display: flex;
+            gap: 25px;
+            font-size: 12px;
+            color: #757575;
+        }
+        .stats-counts strong {
+            display: block;
+            font-size: 16px;
+            color: #333;
+            font-weight: normal;
+        }
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-roblox {
+            background: #fff;
+            border: 1px solid #b8b8b8;
+            padding: 6px 14px;
+            font-size: 13px;
+            border-radius: 3px;
+            cursor: pointer;
+            color: #333;
+        }
+        .btn-roblox:hover {
+            background: #f2f2f2;
+        }
+
+        /* --- TABS --- */
+        .profile-tabs {
+            display: flex;
+            border-bottom: 2px solid #00a2ff;
+            background: #fff;
+            border: 1px solid #d6d6d6;
+            border-bottom: none;
+        }
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px 0;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            color: #555;
+            background: #f8f8f8;
+            border-bottom: 2px solid #d6d6d6;
+        }
+        .tab.active {
+            background: #fff;
+            color: #000;
+            border-bottom: 2px solid #00a2ff;
+        }
+
+        /* --- SECTION HEADERS --- */
+        .section-title {
+            font-size: 18px;
+            margin: 0 0 10px 0;
+            font-weight: normal;
+            color: #333;
+        }
+
+        /* --- CURRENTLY WEARING --- */
+        .wearing-container {
+            display: flex;
+            gap: 15px;
+        }
+        .avatar-3d-view {
+            width: 50%;
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            min-height: 250px;
+        }
+        .avatar-3d-view img {
+            max-height: 230px;
+        }
+        .badge-3d {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border: 1px solid #ccc;
+            padding: 2px 6px;
+            font-size: 11px;
+            background: #fff;
+            font-weight: bold;
+        }
+        .asset-grid {
+            width: 50%;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            background: #39739d;
+            padding: 10px;
+            border-radius: 2px;
+        }
+        .asset-tile {
+            background: #fff;
+            border: 1px solid #ccc;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+        }
+        .asset-tile img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        /* --- COLLECTIONS & BADGES GRID --- */
+        .grid-6 {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+        }
+        .item-card {
+            border: 1px solid #e0e0e0;
+            padding: 8px;
+            text-align: center;
+            background: #fff;
+        }
+        .item-card img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: contain;
+        }
+        .item-card .item-name {
+            font-size: 11px;
+            margin-top: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #333;
+        }
+
+        /* --- GROUPS SECTION --- */
+        .group-card {
+            display: flex;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+        }
+        .group-banner {
+            width: 45%;
+            background: #0074bd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .group-banner img {
+            width: 140px;
+            height: 140px;
+            background: #fff;
+            padding: 10px;
+        }
+        .group-info {
+            width: 55%;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .group-info h3 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+        }
+        .group-info p {
+            font-size: 11px;
+            color: #666;
+            margin: 0 0 15px 0;
+            line-height: 1.3;
+        }
+        .group-meta {
+            display: flex;
+            gap: 40px;
+            font-size: 11px;
+            color: #777;
+        }
+        .group-meta strong {
+            display: block;
+            font-size: 12px;
+            color: #333;
+        }
+
+        /* --- STATISTICS --- */
+        .stats-grid {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .stat-item {
+            font-size: 11px;
+            color: #777;
+        }
+        .stat-item strong {
+            display: block;
+            font-size: 13px;
+            color: #333;
+            margin-top: 4px;
+        }
     </style>
 </head>
 <body>
 
-    <header>
-        <a href="/home" class="logo">
-            <img src="EBURG-logo.png" alt="EBURG">
-        </a>
-        <nav class="main-nav">
-            <a href="/home">Home</a>
-            <a href="/games">Discover</a>
-            <a href="/catalog">Catalog</a>
-            <a href="#">Develop</a>
-        </nav>
-        <div class="search-bar">
-            <input type="text" placeholder="Search">
-        </div>
-        <div class="nav-right">
-            <a href="#" id="myProfileLink">My Profile</a>
-        </div>
-    </header>
-
     <div class="profile-container">
-        <div class="profile-header-card">
-            <div class="profile-avatar-box">
-                <img src="https://avatars.githubusercontent.com/u/316217684?s=400&v=4" alt="Profile Picture">
-            </div>
-            <div class="profile-details">
-                <h1 class="profile-username" id="profileTargetUser">Loading...</h1>
-                <div class="profile-status">"Building cool 2017 stuff on EBURG."</div>
-                <div class="profile-actions">
-                    <button class="btn-add-friend" onclick="alert('Friend request sent!')">Add Friend</button>
-                    <button class="btn-add-friend" style="background:#f0f0f0; color:#333; border:1px solid #ccc;">Message</button>
-                </div>
-            </div>
-        </div>
 
-        <div class="profile-grid">
-            <div class="left-col">
-                <div class="profile-section-card">
-                    <h3>About</h3>
-                    <div class="blurb-text" id="profileBlurb">
-                        Welcome to my EBURG profile!
+        <!-- HEADER CARD -->
+        <div class="card profile-header">
+            <div class="header-left">
+                <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-352D0223CAEE08D7992A512C85C5E482-Png/150/150/AvatarHeadshot/Webp/noFilter" alt="User Avatar" class="avatar-headshot" id="user-headshot">
+                <div class="user-info">
+                    <h1 id="profile-username">EBURG</h1>
+                    <div class="status-quote" id="profile-status">"Welcome to EBURG! Make friends, explore, and play games!"</div>
+                    <div class="stats-counts">
+                        <div>Friends<strong id="friends-count">0</strong></div>
+                        <div>Followers<strong id="followers-count">1M+</strong></div>
+                        <div>Following<strong id="following-count">0</strong></div>
                     </div>
                 </div>
-
-                <div class="profile-section-card">
-                    <h3>Creations</h3>
-                    <p style="font-size:12px; color:#888;">This user hasn't published any games yet.</p>
-                </div>
             </div>
+            <div class="header-actions">
+                <button class="btn-roblox">Message</button>
+                <button class="btn-roblox">Add Friend</button>
+            </div>
+        </div>
 
-            <div class="right-col">
-                <div class="profile-section-card">
-                    <h3>Statistics</h3>
-                    <div class="stat-item">Join Date: <strong>2026</strong></div>
-                    <div class="stat-item">Place Visits: <strong>0</strong></div>
-                    <div class="stat-item">Account Status: <strong>Active Member</strong></div>
+        <!-- TABS -->
+        <div class="profile-tabs">
+            <div class="tab active">About</div>
+            <div class="tab">Creations</div>
+        </div>
+
+        <!-- ABOUT CARD -->
+        <div class="card" style="border-top: none; border-radius: 0 0 3px 3px;">
+            <h2 class="section-title">About</h2>
+            <p style="font-size: 12px; line-height: 1.5; color: #333;" id="about-text">
+                Welcome to the EBURG profile! This is where you can check out the newest items in the catalog, and get a jumpstart on exploring and building on our imagination platform.
+            </p>
+        </div>
+
+        <!-- CURRENTLY WEARING -->
+        <h2 class="section-title">Currently Wearing</h2>
+        <div class="card wearing-container">
+            <div class="avatar-3d-view">
+                <span class="badge-3d">3D</span>
+                <img src="https://tr.rbxcdn.com/30DAY-Avatar-352D0223CAEE08D7992A512C85C5E482-Png/352/352/Avatar/Webp/noFilter" alt="Avatar Fullbody">
+            </div>
+            <div class="asset-grid">
+                <div class="asset-tile"><img src="https://tr.rbxcdn.com/180px-Shirt.png" alt="Torso"></div>
+                <div class="asset-tile"><img src="https://tr.rbxcdn.com/180px-LeftArm.png" alt="Left Arm"></div>
+                <div class="asset-tile"><img src="https://tr.rbxcdn.com/180px-RightArm.png" alt="Right Arm"></div>
+                <div class="asset-tile"><img src="https://tr.rbxcdn.com/180px-Torso.png" alt="Torso"></div>
+                <div class="asset-tile"><img src="https://tr.rbxcdn.com/180px-LeftLeg.png" alt="Left Leg"></div>
+                <div class="asset-tile"><img src="https://tr.rbxcdn.com/180px-RightLeg.png" alt="Right Leg"></div>
+                <div class="asset-tile"><img src="https://tr.rbxcdn.com/180px-Cap.png" alt="Cap"></div>
+                <div class="asset-tile"><img src="https://tr.rbxcdn.com/180px-Jacket.png" alt="Jacket"></div>
+            </div>
+        </div>
+
+        <!-- COLLECTIONS -->
+        <h2 class="section-title">Collections</h2>
+        <div class="card grid-6">
+            <div class="item-card">
+                <img src="https://tr.rbxcdn.com/30DAY-Hat-FailedScience.png" alt="Item">
+                <div class="item-name">Failed Science Expe...</div>
+            </div>
+            <div class="item-card">
+                <img src="https://tr.rbxcdn.com/30DAY-Hat-HeadInTube.png" alt="Item">
+                <div class="item-name">Head in a Test Tube</div>
+            </div>
+            <div class="item-card">
+                <img src="https://tr.rbxcdn.com/30DAY-Hat-Satellite.png" alt="Item">
+                <div class="item-name">Orbiting Satellite</div>
+            </div>
+            <div class="item-card">
+                <img src="https://tr.rbxcdn.com/30DAY-Hat-Fedora.png" alt="Item">
+                <div class="item-name">Stylish Scientist Fed...</div>
+            </div>
+            <div class="item-card">
+                <img src="https://tr.rbxcdn.com/30DAY-Hat-Meep.png" alt="Item">
+                <div class="item-name">Golden Meep Hat</div>
+            </div>
+            <div class="item-card">
+                <img src="https://tr.rbxcdn.com/30DAY-Hat-Catseye.png" alt="Item">
+                <div class="item-name">The Cerulean Catse...</div>
+            </div>
+        </div>
+
+        <!-- GROUPS -->
+        <h2 class="section-title">Groups</h2>
+        <div class="card group-card" style="padding: 0;">
+            <div class="group-banner">
+                <img src="https://avatars.githubusercontent.com/u/316217684?s=400&v=4" alt="Group Logo">
+            </div>
+            <div class="group-info">
+                <div>
+                    <h3>EBURG Community</h3>
+                    <p>The official EBURG group. The purpose of this group is to bring builders and developers together!</p>
+                </div>
+                <div class="group-meta">
+                    <div>Members<strong>95K+</strong></div>
+                    <div>Rank<strong>System Operator</strong></div>
                 </div>
             </div>
         </div>
+
+        <!-- BADGES -->
+        <h2 class="section-title">EBURG Badges</h2>
+        <div class="card grid-6">
+            <div class="item-card">
+                <img src="https://images.rbxcdn.com/710648f8a156291a27e3d168e376046e.png" alt="Badge">
+                <div class="item-name">Homestead</div>
+            </div>
+            <div class="item-card">
+                <img src="https://images.rbxcdn.com/023ea9b433c06d1566a7b3db11ed02a1.png" alt="Badge">
+                <div class="item-name">Bricksmith</div>
+            </div>
+            <div class="item-card">
+                <img src="https://images.rbxcdn.com/131b14736f8a2fb3763c32145b48bd8b.png" alt="Badge">
+                <div class="item-name">Combat Initiation</div>
+            </div>
+            <div class="item-card">
+                <img src="https://images.rbxcdn.com/649d21c3855a8f4c01f6004b77d6ba4b.png" alt="Badge">
+                <div class="item-name">Veteran</div>
+            </div>
+            <div class="item-card">
+                <img src="https://images.rbxcdn.com/1d13f172fa0573e895c3bb71dd63f0d5.png" alt="Badge">
+                <div class="item-name">Warrior</div>
+            </div>
+            <div class="item-card">
+                <img src="https://images.rbxcdn.com/7a27bf1a42337d579ef6022e6cfefbe3.png" alt="Badge">
+                <div class="item-name">Friendship</div>
+            </div>
+        </div>
+
+        <!-- STATISTICS -->
+        <h2 class="section-title">Statistics</h2>
+        <div class="card stats-grid">
+            <div class="stat-item">
+                Join Date
+                <strong>2/27/2006</strong>
+            </div>
+            <div class="stat-item">
+                Place Visits
+                <strong>4,575,942</strong>
+            </div>
+            <div class="stat-item">
+                Forum Posts
+                <strong>289</strong>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        // Extract the user parameter from URL paths like /users/1/profile or /users/karsonypoo/profile
+        // Extract username dynamically from /users/:username/profile or fallback
         const pathSegments = window.location.pathname.split('/').filter(Boolean);
-        let targetUser = 'Guest';
+        let username = "EBURG";
 
-        if (pathSegments[0] === 'users' && pathSegments[1]) {
-            targetUser = decodeURIComponent(pathSegments[1]);
-        } else {
-            targetUser = localStorage.getItem('eburg_user') || 'Guest';
+        if (pathSegments.length >= 2 && pathSegments[0] === 'users') {
+            username = pathSegments[1];
         }
 
-        document.getElementById('profileTargetUser').innerText = targetUser;
-        document.title = `${targetUser}'s Profile - EBURG`;
-        document.getElementById('profileBlurb').innerText = `Hello! I am ${targetUser}, welcome to my official EBURG profile page.`;
-
-        // Configure Header "My Profile" Link
-        const myUser = localStorage.getItem('eburg_user') || 'Guest';
-        document.getElementById('myProfileLink').href = `/users/${myUser}/profile`;
+        document.getElementById('profile-username').innerText = username;
+        document.title = `${username}'s Profile - EBURG`;
     </script>
-
 </body>
 </html>
