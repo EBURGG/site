@@ -71,6 +71,7 @@
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 3px;
+            box-sizing: border-box;
         }
         .dob-selects {
             display: flex;
@@ -87,6 +88,19 @@
             text-align: center;
             cursor: pointer;
             border-radius: 3px;
+            user-select: none;
+        }
+        .gender-btn.selected {
+            background-color: #00a2ff;
+            color: white;
+            border-color: #0082cc;
+        }
+        .error-msg {
+            color: #d9534f;
+            font-size: 11px;
+            margin-bottom: 10px;
+            display: none;
+            text-align: center;
         }
     </style>
 </head>
@@ -100,9 +114,9 @@
             <a href="#">About</a>
             <a href="#">Platforms</a>
         </nav>
-        <form class="landing-login" onsubmit="alert('EBURG login demo'); return false;">
-            <input type="text" placeholder="Username">
-            <input type="password" placeholder="Password">
+        <form class="landing-login" id="loginForm">
+            <input type="text" id="loginUsername" placeholder="Username" required>
+            <input type="password" id="loginPassword" placeholder="Password" required>
             <button type="submit" class="btn-green" style="padding: 4px 10px;">Log In</button>
         </form>
     </header>
@@ -114,31 +128,128 @@
         </div>
         <div class="signup-box">
             <h2>SIGN UP AND START HAVING FUN!</h2>
-            <form onsubmit="alert('Registration functionality coming soon!'); return false;">
+            <div id="signupError" class="error-msg"></div>
+            <form id="signupForm">
                 <div class="form-group dob-selects">
-                    <select><option>Month</option></select>
-                    <select><option>Day</option></select>
-                    <select><option>Year</option></select>
+                    <select id="dobMonth" required>
+                        <option value="">Month</option>
+                        <option value="Jan">Jan</option>
+                        <option value="Feb">Feb</option>
+                        <option value="Mar">Mar</option>
+                        <option value="Apr">Apr</option>
+                        <option value="May">May</option>
+                        <option value="Jun">Jun</option>
+                        <option value="Jul">Jul</option>
+                        <option value="Aug">Aug</option>
+                        <option value="Sep">Sep</option>
+                        <option value="Oct">Oct</option>
+                        <option value="Nov">Nov</option>
+                        <option value="Dec">Dec</option>
+                    </select>
+                    <select id="dobDay" required>
+                        <option value="">Day</option>
+                        <script>
+                            for(let i=1; i<=31; i++) document.write(`<option value="${i}">${i}</option>`);
+                        </script>
+                    </select>
+                    <select id="dobYear" required>
+                        <option value="">Year</option>
+                        <script>
+                            for(let i=2026; i>=1920; i--) document.write(`<option value="${i}">${i}</option>`);
+                        </script>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <input type="text" placeholder="Username (don't use your real name)">
+                    <input type="text" id="signupUsername" placeholder="Username (don't use your real name)" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" placeholder="Password (minimum length 8)">
+                    <input type="password" id="signupPassword" placeholder="Password (minimum length 8)" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" placeholder="Confirm Password">
+                    <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
                 </div>
                 <div class="form-group gender-select">
-                    <div class="gender-btn">Girl</div>
-                    <div class="gender-btn">Boy</div>
+                    <div class="gender-btn" onclick="selectGender('Girl', this)">Girl</div>
+                    <div class="gender-btn" onclick="selectGender('Boy', this)">Boy</div>
                 </div>
                 <div style="font-size: 10px; color: #777; margin-bottom: 10px;">
                     This is an archival fan project. Do not enter real sensitive credentials.
                 </div>
-                <button type="submit" class="btn-green" style="width: 100%; padding: 10px;">Sign Up</button>
+                <button type="submit" id="signupBtn" class="btn-green" style="width: 100%; padding: 10px;">Sign Up</button>
             </form>
         </div>
     </div>
+
+    <script>
+        let selectedGender = '';
+
+        function selectGender(gender, element) {
+            selectedGender = gender;
+            document.querySelectorAll('.gender-btn').forEach(btn => btn.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        // Handle Signup
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const errorBox = document.getElementById('signupError');
+            const submitBtn = document.getElementById('signupBtn');
+            errorBox.style.display = 'none';
+
+            const username = document.getElementById('signupUsername').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password.length < 8) {
+                errorBox.innerText = 'Password must be at least 8 characters.';
+                errorBox.style.display = 'block';
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                errorBox.innerText = 'Passwords do not match.';
+                errorBox.style.display = 'block';
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Creating account...';
+
+            try {
+                const response = await fetch('/api/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('eburg_user', username);
+                    window.location.href = '/home';
+                } else {
+                    errorBox.innerText = data.error || 'Failed to create account.';
+                    errorBox.style.display = 'block';
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'Sign Up';
+                }
+            } catch (err) {
+                errorBox.innerText = 'Server error. Please try again.';
+                errorBox.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Sign Up';
+            }
+        });
+
+        // Quick login fallback handler
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const user = document.getElementById('loginUsername').value;
+            if(user) {
+                localStorage.setItem('eburg_user', user);
+                window.location.href = '/home';
+            }
+        });
+    </script>
 </body>
 </html>
