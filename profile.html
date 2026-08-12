@@ -4,584 +4,108 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile - EBURG</title>
-    <script src="/maintenance.js"></script>
-    <link rel="icon" type="image/png" href="https://avatars.githubusercontent.com/u/316217684?s=400&v=4">
+    
+    <!-- CSS and Site Scripts -->
     <link rel="stylesheet" href="/style.css">
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    <script src="/maintenance.js"></script>
 
-        body {
-            background-color: #e3e3e3;
-            font-family: 'Source Sans Pro', Arial, sans-serif;
-            padding-bottom: 40px;
-            color: #333;
-        }
-
-        /* --- TOP NAVIGATION BAR --- */
-        .navbar {
-            background-color: #0074bd;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            color: white;
-            font-size: 14px;
-        }
-
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .nav-logo {
-            font-weight: bold;
-            font-size: 18px;
-            color: white;
-            text-decoration: none;
-            letter-spacing: 1px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 15px;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .nav-links a:hover {
-            text-decoration: underline;
-        }
-
-        .nav-search input {
-            padding: 4px 8px;
-            border-radius: 3px;
-            border: 1px solid #005082;
-            width: 180px;
-            font-size: 12px;
-        }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .nav-right a {
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        /* --- PROFILE CONTENT --- */
-        .profile-container {
-            max-width: 970px;
-            margin: 20px auto;
-            padding: 0 10px;
-        }
-
-        .card {
-            background: #fff;
-            border: 1px solid #d6d6d6;
-            border-radius: 3px;
-            padding: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        /* --- HEADER CARD --- */
-        .profile-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .avatar-headshot {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 1px solid #ccc;
-            background: #f2f2f2;
-            object-fit: cover;
-        }
-
-        .user-info h1 {
-            font-size: 24px;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .status-quote {
-            font-size: 13px;
-            color: #555;
-            font-style: italic;
-            margin-bottom: 12px;
-        }
-
-        .stats-counts {
-            display: flex;
-            gap: 25px;
-            font-size: 12px;
-            color: #757575;
-        }
-
-        .stats-counts strong {
-            display: block;
-            font-size: 16px;
-            color: #333;
-            font-weight: normal;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn-roblox {
-            background: #fff;
-            border: 1px solid #b8b8b8;
-            padding: 6px 14px;
-            font-size: 13px;
-            border-radius: 3px;
-            cursor: pointer;
-            color: #333;
-        }
-
-        .btn-roblox:hover {
-            background: #f2f2f2;
-        }
-
-        /* --- TABS --- */
-        .profile-tabs {
-            display: flex;
-            background: #fff;
-            border: 1px solid #d6d6d6;
-            border-bottom: none;
-        }
-
-        .tab {
-            flex: 1;
-            text-align: center;
-            padding: 10px 0;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-            color: #555;
-            background: #f8f8f8;
-            border-bottom: 2px solid #d6d6d6;
-        }
-
-        .tab.active {
-            background: #fff;
-            color: #000;
-            border-bottom: 2px solid #00a2ff;
-        }
-
-        /* --- SECTION TITLES --- */
-        .section-title {
-            font-size: 18px;
-            margin: 0 0 10px 0;
-            font-weight: normal;
-            color: #333;
-        }
-
-        /* --- CURRENTLY WEARING --- */
-        .wearing-container {
-            display: flex;
-            gap: 15px;
-        }
-
-        .avatar-3d-view {
-            width: 50%;
-            background: #f9f9f9;
-            border: 1px solid #e0e0e0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            min-height: 250px;
-        }
-
-        .avatar-3d-view img {
-            max-height: 230px;
-        }
-
-        .badge-3d {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            border: 1px solid #ccc;
-            padding: 2px 6px;
-            font-size: 11px;
-            background: #fff;
-            font-weight: bold;
-        }
-
-        .asset-grid {
-            width: 50%;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            background: #39739d;
-            padding: 10px;
-            border-radius: 2px;
-        }
-
-        .asset-tile {
-            background: #fff;
-            border: 1px solid #ccc;
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 4px;
-        }
-
-        .asset-tile img {
-            max-width: 100%;
-            max-height: 100%;
-        }
-
-        /* --- GRIDS (COLLECTIONS & BADGES) --- */
-        .grid-6 {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 10px;
-        }
-
-        .item-card {
-            border: 1px solid #e0e0e0;
-            padding: 8px;
-            text-align: center;
-            background: #fff;
-        }
-
-        .item-card img {
-            width: 100%;
-            aspect-ratio: 1;
-            object-fit: contain;
-        }
-
-        .item-card .item-name {
-            font-size: 11px;
-            margin-top: 5px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            color: #333;
-        }
-
-        /* --- GROUPS --- */
-        .group-card {
-            display: flex;
-            background: #fff;
-            border: 1px solid #e0e0e0;
-        }
-
-        .group-banner {
-            width: 45%;
-            background: #0074bd;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .group-banner img {
-            width: 140px;
-            height: 140px;
-            background: #fff;
-            padding: 10px;
-        }
-
-        .group-info {
-            width: 55%;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .group-info h3 {
-            margin: 0 0 5px 0;
-            font-size: 16px;
-        }
-
-        .group-info p {
-            font-size: 11px;
-            color: #666;
-            margin: 0 0 15px 0;
-            line-height: 1.3;
-        }
-
-        .group-meta {
-            display: flex;
-            gap: 40px;
-            font-size: 11px;
-            color: #777;
-        }
-
-        .group-meta strong {
-            display: block;
-            font-size: 12px;
-            color: #333;
-        }
-
-        /* --- STATISTICS --- */
-        .stats-grid {
-            display: flex;
-            justify-content: space-around;
-            text-align: center;
-            padding: 10px 0;
-        }
-
-        .stat-item {
-            font-size: 11px;
-            color: #777;
-        }
-
-        .stat-item strong {
-            display: block;
-            font-size: 13px;
-            color: #333;
-            margin-top: 4px;
-        }
-    </style>
+    <!-- Global Image Fallback Listener -->
     <script src="/imgfix.js"></script>
 </head>
 <body>
 
-    <!-- TOP NAVIGATION -->
-    <header class="navbar">
-        <div class="nav-left">
-            <a href="/home" class="nav-logo">EBURG</a>
-            <nav class="nav-links">
-                <a href="/home">Home</a>
-                <a href="/games">Games</a>
-                <a href="/catalog">Catalog</a>
-                <a href="/develop">Develop</a>
-            </nav>
-        </div>
-        <div class="nav-search">
-            <input type="text" placeholder="Search">
-        </div>
-        <div class="nav-right">
-            <a href="#" class="user-display-name">Guest</a>
-        </div>
+    <!-- Header Navigation Bar -->
+    <header style="padding: 15px 30px; background: #1a1a1a; color: white; display: flex; justify-content: space-between; align-items: center;">
+        <div style="font-weight: bold; font-size: 1.2rem;">EBURG</div>
+        <nav>
+            <a href="/home" style="color: white; margin-right: 15px; text-decoration: none;">Home</a>
+            <span class="user-display-name" style="color: #aaa;">Guest</span>
+        </nav>
     </header>
 
-    <!-- PROFILE BODY -->
-    <div class="profile-container">
-
-        <!-- USER HEADER CARD -->
-        <div class="card profile-header">
-            <div class="header-left">
-                <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-352D0223CAEE08D7992A512C85C5E482-Png/150/150/AvatarHeadshot/Webp/noFilter" alt="User Avatar" class="avatar-headshot" id="user-headshot">
-                <div class="user-info">
-                    <h1 id="profile-username">EBURG</h1>
-                    <div class="status-quote" id="profile-status">"Welcome to EBURG! Make friends, explore, and play games!"</div>
-                    <div class="stats-counts">
-                        <div>Friends<strong id="friends-count">0</strong></div>
-                        <div>Followers<strong id="followers-count">1M+</strong></div>
-                        <div>Following<strong id="following-count">0</strong></div>
-                    </div>
-                </div>
-            </div>
-            <div class="header-actions">
-                <button class="btn-roblox">Message</button>
-                <button class="btn-roblox">Add Friend</button>
-            </div>
-        </div>
-
-        <!-- TABS -->
-        <div class="profile-tabs">
-            <div class="tab active">About</div>
-            <div class="tab">Creations</div>
-        </div>
-
-        <!-- ABOUT CARD -->
-        <div class="card" style="border-top: none; border-radius: 0 0 3px 3px;">
-            <h2 class="section-title">About</h2>
-            <p style="font-size: 12px; line-height: 1.5; color: #333;" id="about-text">
-                Welcome to the EBURG profile! This is where you can check out the newest items in the catalog, and get a jumpstart on exploring and building on our imagination platform.
-            </p>
-        </div>
-
-        <!-- CURRENTLY WEARING -->
-        <h2 class="section-title">Currently Wearing</h2>
-        <div class="card wearing-container">
-            <div class="avatar-3d-view">
-                <span class="badge-3d">3D</span>
-                <img src="https://tr.rbxcdn.com/30DAY-Avatar-352D0223CAEE08D7992A512C85C5E482-Png/352/352/Avatar/Webp/noFilter" alt="Avatar Fullbody">
-            </div>
-            <div class="asset-grid">
-                <div class="asset-tile"><img src="https://tr.rbxcdn.com/180px-Shirt.png" alt="Torso"></div>
-                <div class="asset-tile"><img src="https://tr.rbxcdn.com/180px-LeftArm.png" alt="Left Arm"></div>
-                <div class="asset-tile"><img src="https://tr.rbxcdn.com/180px-RightArm.png" alt="Right Arm"></div>
-                <div class="asset-tile"><img src="https://tr.rbxcdn.com/180px-Torso.png" alt="Torso"></div>
-                <div class="asset-tile"><img src="https://tr.rbxcdn.com/180px-LeftLeg.png" alt="Left Leg"></div>
-                <div class="asset-tile"><img src="https://tr.rbxcdn.com/180px-RightLeg.png" alt="Right Leg"></div>
-                <div class="asset-tile"><img src="https://tr.rbxcdn.com/180px-Cap.png" alt="Cap"></div>
-                <div class="asset-tile"><img src="https://tr.rbxcdn.com/180px-Jacket.png" alt="Jacket"></div>
-            </div>
-        </div>
-
-        <!-- COLLECTIONS -->
-        <h2 class="section-title">Collections</h2>
-        <div class="card grid-6">
-            <div class="item-card">
-                <img src="https://tr.rbxcdn.com/30DAY-Hat-FailedScience.png" alt="Item">
-                <div class="item-name">Failed Science Expe...</div>
-            </div>
-            <div class="item-card">
-                <img src="https://tr.rbxcdn.com/30DAY-Hat-HeadInTube.png" alt="Item">
-                <div class="item-name">Head in a Test Tube</div>
-            </div>
-            <div class="item-card">
-                <img src="https://tr.rbxcdn.com/30DAY-Hat-Satellite.png" alt="Item">
-                <div class="item-name">Orbiting Satellite</div>
-            </div>
-            <div class="item-card">
-                <img src="https://tr.rbxcdn.com/30DAY-Hat-Fedora.png" alt="Item">
-                <div class="item-name">Stylish Scientist Fed...</div>
-            </div>
-            <div class="item-card">
-                <img src="https://tr.rbxcdn.com/30DAY-Hat-Meep.png" alt="Item">
-                <div class="item-name">Golden Meep Hat</div>
-            </div>
-            <div class="item-card">
-                <img src="https://tr.rbxcdn.com/30DAY-Hat-Catseye.png" alt="Item">
-                <div class="item-name">The Cerulean Catse...</div>
-            </div>
-        </div>
-
-        <!-- GROUPS -->
-        <h2 class="section-title">Groups</h2>
-        <div class="card group-card" style="padding: 0;">
-            <div class="group-banner">
-                <img src="https://avatars.githubusercontent.com/u/316217684?s=400&v=4" alt="Group Logo">
-            </div>
-            <div class="group-info">
+    <!-- Main Profile Card Container -->
+    <main style="max-width: 800px; margin: 40px auto; padding: 20px;">
+        <div id="profile-container" style="background: #242424; color: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <img id="profile-avatar" src="https://raw.githubusercontent.com/EBURGG/site/refs/heads/main/placeholders/notfound.png" alt="Avatar" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; background: #333;">
                 <div>
-                    <h3>EBURG Community</h3>
-                    <p>The official EBURG group. The purpose of this group is to bring builders and developers together!</p>
-                </div>
-                <div class="group-meta">
-                    <div>Members<strong>95K+</strong></div>
-                    <div>Rank<strong>System Operator</strong></div>
+                    <h1 id="profile-username" style="margin: 0; font-size: 2rem;">Loading...</h1>
+                    <p id="profile-id" style="margin: 5px 0; color: #888; font-size: 0.9rem;"></p>
+                    <p id="profile-status" style="margin-top: 10px; font-style: italic; color: #ccc;">"..."</p>
                 </div>
             </div>
-        </div>
-
-        <!-- BADGES -->
-        <h2 class="section-title">EBURG Badges</h2>
-        <div class="card grid-6">
-            <div class="item-card">
-                <img src="https://images.rbxcdn.com/710648f8a156291a27e3d168e376046e.png" alt="Badge">
-                <div class="item-name">Homestead</div>
-            </div>
-            <div class="item-card">
-                <img src="https://images.rbxcdn.com/023ea9b433c06d1566a7b3db11ed02a1.png" alt="Badge">
-                <div class="item-name">Bricksmith</div>
-            </div>
-            <div class="item-card">
-                <img src="https://images.rbxcdn.com/131b14736f8a2fb3763c32145b48bd8b.png" alt="Badge">
-                <div class="item-name">Combat Initiation</div>
-            </div>
-            <div class="item-card">
-                <img src="https://images.rbxcdn.com/649d21c3855a8f4c01f6004b77d6ba4b.png" alt="Badge">
-                <div class="item-name">Veteran</div>
-            </div>
-            <div class="item-card">
-                <img src="https://images.rbxcdn.com/1d13f172fa0573e895c3bb71dd63f0d5.png" alt="Badge">
-                <div class="item-name">Warrior</div>
-            </div>
-            <div class="item-card">
-                <img src="https://images.rbxcdn.com/7a27bf1a42337d579ef6022e6cfefbe3.png" alt="Badge">
-                <div class="item-name">Friendship</div>
-            </div>
-        </div>
-
-        <!-- STATISTICS -->
-        <h2 class="section-title">Statistics</h2>
-        <div class="card stats-grid">
-            <div class="stat-item">
-                Join Date
-                <strong>2/27/2006</strong>
-            </div>
-            <div class="stat-item">
-                Place Visits
-                <strong>4,575,942</strong>
-            </div>
-            <div class="stat-item">
-                Forum Posts
-                <strong>289</strong>
-            </div>
-        </div>
-
-    </div>
-
-   <script>
-    async function loadUserProfile() {
-        const pathSegments = window.location.pathname.split('/').filter(Boolean);
-        const userIdOrName = pathSegments[1]; // Gets the '12345' or 'EBURG' from /users/12345/profile
-
-        if (!userIdOrName) {
-            window.location.href = '/404';
-            return;
-        }
-
-        try {
-            // Fetch real user data from your Vercel serverless API or Redis database
-            const res = await fetch(`/api/get-user?id=${encodeURIComponent(userIdOrName)}`);
             
-            // If the user does NOT exist in your database
-            if (!res.ok) {
-                document.body.innerHTML = `
-                    <div style="text-align: center; padding: 100px; font-family: sans-serif;">
-                        <img src="https://raw.githubusercontent.com/EBURGG/site/refs/heads/main/placeholders/notfound.png" style="max-width: 500px; width: 100%;">
-                        <h2 style="margin-top: 20px;">User Not Found</h2>
-                        <p>The user specified does not exist in EBURG.</p>
-                        <a href="/home" style="color: #0074bd;">Go back Home</a>
-                    </div>
-                `;
+            <hr style="border: 0; border-top: 1px solid #333; margin: 25px 0;">
+
+            <div>
+                <h3>Account Details</h3>
+                <p><strong>Member Since:</strong> <span id="profile-joined">...</span></p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Profile Fetching & 404 Validation Logic -->
+    <script>
+        async function loadUserProfile() {
+            // Grab the second segment from paths like /users/1/profile or /users/EBURG/profile
+            const pathSegments = window.location.pathname.split('/').filter(Boolean);
+            const userIdOrName = pathSegments[1];
+
+            if (!userIdOrName) {
+                showNotFound();
                 return;
             }
 
-            const userData = await res.json();
+            try {
+                // Fetch user data from backend API
+                const res = await fetch(`/api/get-user?id=${encodeURIComponent(userIdOrName)}`);
+                
+                // If API returns 404 (user doesn't exist)
+                if (!res.ok) {
+                    showNotFound();
+                    return;
+                }
 
-            // Populate page with REAL data from database
-            document.getElementById('profile-username').innerText = userData.username;
-            document.getElementById('profile-status').innerText = `"${userData.status || 'Welcome to EBURG!'}"`;
-            document.title = `${userData.username}'s Profile - EBURG`;
+                const userData = await res.json();
 
-        } catch (err) {
-            console.error("Error loading profile:", err);
+                // Inject user info into HTML
+                document.getElementById('profile-username').innerText = userData.username || 'Unknown User';
+                document.getElementById('profile-id').innerText = `User ID: #${userData.id || 'N/A'}`;
+                document.getElementById('profile-status').innerText = `"${userData.status || 'Welcome to EBURG!'}"`;
+                
+                if (userData.created_at) {
+                    const joinDate = new Date(userData.created_at).toLocaleDateString();
+                    document.getElementById('profile-joined').innerText = joinDate;
+                } else {
+                    document.getElementById('profile-joined').innerText = 'Unknown';
+                }
+
+                document.title = `${userData.username}'s Profile - EBURG`;
+
+            } catch (err) {
+                console.error("Error loading profile:", err);
+                showNotFound();
+            }
         }
-    }
 
-    loadUserProfile();
+        // Render custom 404 layout with your missing image if the user doesn't exist
+        function showNotFound() {
+            document.body.innerHTML = `
+                <div style="text-align: center; padding: 100px 20px; font-family: sans-serif; color: white; background: #121212; min-height: 100vh;">
+                    <img src="https://raw.githubusercontent.com/EBURGG/site/refs/heads/main/placeholders/notfound.png" style="max-width: 400px; width: 100%; border-radius: 8px;">
+                    <h2 style="margin-top: 20px; font-size: 2rem;">User Not Found</h2>
+                    <p style="color: #aaa;">The user specified does not exist in EBURG.</p>
+                    <a href="/home" style="display: inline-block; margin-top: 15px; padding: 10px 20px; background: #0074bd; color: white; text-decoration: none; border-radius: 5px;">Go back Home</a>
+                </div>
+            `;
+        }
 
-    // Set logged-in user in header
-    const currentUser = localStorage.getItem('eburg_user') || 'Guest';
-    document.querySelectorAll('.user-display-name').forEach(el => el.innerText = currentUser);
-</script>
+        // Execute function on page load
+        loadUserProfile();
+
+        // Populate header name if logged in locally
+        const currentUser = localStorage.getItem('eburg_user') || 'Guest';
+        document.querySelectorAll('.user-display-name').forEach(el => el.innerText = currentUser);
+    </script>
 </body>
 </html>
