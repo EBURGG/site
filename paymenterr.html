@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EBURG</title>
+    <script src="maintenance.js"></script>
+    <link rel="icon" type="image/png" href="https://avatars.githubusercontent.com/u/316217684?s=400&u=2b01b96d2ad1e4f698ff1394e711e619a9a2f029&v=4">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: #e3e3e3;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .error-wrapper {
+            max-width: 960px;
+            margin: 40px auto;
+            padding: 0 15px;
+            display: flex;
+            justify-content: center;
+        }
+        .error-card {
+            background: white;
+            border: 1px solid #d6d6d6;
+            border-radius: 4px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 720px;
+        }
+        .error-card img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="/home" class="logo">
+            <img src="EBURG-logo.png" alt="EBURG">
+        </a>
+        <nav class="main-nav">
+            <a href="/home">Home</a>
+            <a href="/games">Discover</a>
+            <a href="/catalog">Catalog</a>
+            <a href="#">Develop</a>
+        </nav>
+        <div class="search-bar">
+            <input type="text" placeholder="Search">
+        </div>
+        <div class="nav-right">
+            <a href="#" class="user-display-name">Guest</a>
+        </div>
+    </header>
+
+    <div class="error-wrapper">
+        <div class="error-card">
+            <img src="https://raw.githubusercontent.com/EBURGG/site/refs/heads/main/PaymentUnavailable_Error.png" alt="Payment System Maintenance">
+        </div>
+    </div>
+
+    <script>
+        // Set user name in header
+        const currentUser = localStorage.getItem('eburg_user') || 'Guest';
+        document.querySelectorAll('.user-display-name').forEach(el => el.innerText = currentUser);
+    </script>
+</body>
+</html>
