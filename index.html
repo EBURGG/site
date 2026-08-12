@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <style>
         body.landing {
-            background: #25aae1 url('https://via.placeholder.com/1920x1080/25aae1/ffffff?text=Rollercoaster+Background') no-repeat center center fixed;
+            background: #25aae1 url('https://raw.githubusercontent.com/EBURGG/site/refs/heads/main/roller.jpg') no-repeat center center fixed;
             background-size: cover;
         }
         .landing-header {
@@ -181,6 +181,11 @@
     </div>
 
     <script>
+        // Redirect if already signed in
+        if (localStorage.getItem('eburg_user')) {
+            window.location.href = '/home';
+        }
+
         let selectedGender = '';
 
         function selectGender(gender, element) {
