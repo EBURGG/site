@@ -229,22 +229,31 @@
         .ad-box-vertical {
             width: 160px;
             height: 600px;
-            background: #eaeaea;
+            background: #ffffff;
             border: 1px solid #ccc;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             color: #888;
             font-size: 11px;
             text-align: center;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .ad-box-vertical img {
+            max-width: 140px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
 
+    <!-- Header Navigation with Regular Logo -->
     <header>
         <a href="home.html" class="logo">
-            <img src="eburgblue.png" alt="EBURG">
+            <img src="EBURG-logo.png" alt="EBURG">
         </a>
         <nav class="main-nav">
             <a href="home.html">Home</a>
@@ -350,8 +359,10 @@
         </main>
 
         <aside class="sidebar-right">
+            <!-- White Background Area using Blue Logo -->
             <div class="ad-box-vertical">
-                160x600<br>Advertisement
+                <img src="eburgblue.png" alt="EBURG Blue Logo">
+                <span>160x600<br>Advertisement</span>
             </div>
         </aside>
     </div>
