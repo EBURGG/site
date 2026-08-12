@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - EBURG</title>
+    <link rel="icon" type="image/png" href="https://avatars.githubusercontent.com/u/316217684?s=400&u=2b01b96d2ad1e4f698ff1394e711e619a9a2f029&v=4">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: #e3e3e3;
+        }
+
+        /* Layout Grid */
+        .home-layout {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 10px;
+            gap: 15px;
+        }
+
+        /* Left Sidebar */
+        .sidebar-left {
+            width: 170px;
+            flex-shrink: 0;
+        }
+
+        .user-mini-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        .user-mini-profile img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid #ccc;
+        }
+
+        .nav-list {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .nav-list li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #393b3d;
+            text-decoration: none;
+            padding: 6px 0;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .nav-list li a:hover {
+            color: #00a2ff;
+        }
+
+        .blog-section h4, .events-section h4 {
+            font-size: 11px;
+            color: #757575;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .blog-post {
+            font-size: 11px;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .blog-post a {
+            color: #00a2ff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Main Feed */
+        .main-feed {
+            flex-grow: 1;
+            min-width: 0; /* Prevents flex blowout */
+        }
+
+        .welcome-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .avatar-circle-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #fff;
+            border: 1px solid #ccc;
+            overflow: hidden;
+        }
+
+        .avatar-circle-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .welcome-header h1 {
+            font-size: 26px;
+            color: #393b3d;
+        }
+
+        .section-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .section-bar h2 {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .see-all-link {
+            color: #00a2ff;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Friends Strip */
+        .friends-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .friend-card {
+            text-align: center;
+            width: 65px;
+            flex-shrink: 0;
+        }
+
+        .friend-avatar {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: #fff;
+            border: 1px solid #d6d6d6;
+            margin: 0 auto 4px auto;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .friend-avatar img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #00a227;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            border: 1px solid #fff;
+        }
+
+        .friend-name {
+            font-size: 10px;
+            color: #393b3d;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Game Grids */
+        .home-games-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .home-game-card {
+            background: white;
+            border: 1px solid #d6d6d6;
+            border-radius: 3px;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .home-game-card img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+        }
+
+        .home-game-info {
+            padding: 5px;
+        }
+
+        .home-game-title {
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .home-game-stats {
+            font-size: 10px;
+            color: #757575;
+            margin-top: 2px;
+        }
+
+        /* Right Sidebar Ads */
+        .sidebar-right {
+            width: 160px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .ad-box-vertical {
+            width: 160px;
+            height: 600px;
+            background: #eaeaea;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 11px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header>
+        <a href="home.html" class="logo">
+            <img src="EBURG-logo.png" alt="EBURG">
+        </a>
+        <nav class="main-nav">
+            <a href="home.html">Home</a>
+            <a href="games.html">Discover</a>
+            <a href="catalog.html">Catalog</a>
+            <a href="#">Develop</a>
+        </nav>
+        <div class="search-bar">
+            <input type="text" placeholder="Search">
+        </div>
+        <div class="nav-right">
+            <a href="profile.html">EBURG Admin</a>
+        </div>
+    </header>
+
+    <div class="home-layout">
+        
+        <!-- Left Sidebar Navigation -->
+        <aside class="sidebar-left">
+            <div class="user-mini-profile">
+                <img src="https://via.placeholder.com/28" alt="Avatar">
+                <span>EBURG Admin</span>
+            </div>
+
+            <ul class="nav-list">
+                <li><a href="profile.html">👤 Profile</a></li>
+                <li><a href="avatar.html">👕 Avatar</a></li>
+                <li><a href="#">📦 Inventory</a></li>
+                <li><a href="#">💰 Money</a></li>
+                <li><a href="#">👥 Groups</a></li>
+                <li><a href="#">⭐ Premium</a></li>
+            </ul>
+
+            <div class="blog-section">
+                <h4>Blog</h4>
+                <div class="blog-post">
+                    <a href="#">EBURG 2017 Client Update</a>
+                    <div style="color: #777;">2 days ago</div>
+                </div>
+                <div class="blog-post">
+                    <a href="#">Community Catalog Submissions</a>
+                    <div style="color: #777;">1 week ago</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Home Content Feed -->
+        <main class="main-feed">
+            
+            <!-- User Welcome Banner -->
+            <div class="welcome-header">
+                <div class="avatar-circle-large">
+                    <img src="https://via.placeholder.com/80" alt="Avatar Profile">
+                </div>
+                <h1>EBURG Admin</h1>
+            </div>
+
+            <!-- Friends Strip -->
+            <div class="section-bar">
+                <h2>Friends (8)</h2>
+                <a href="#" class="see-all-link">See All</a>
+            </div>
+            <div class="friends-row">
+                <div class="friend-card">
+                    <div class="friend-avatar">
+                        <img src="https://via.placeholder.com/55" alt="Friend">
+                        <div class="status-dot"></div>
+                    </div>
+                    <div class="friend-name">karsonypoo</div>
+                </div>
+                <div class="friend-card">
+                    <div class="friend-avatar">
+                        <img src="https://via.placeholder.com/55" alt="Friend">
+                        <div class="status-dot"></div>
+                    </div>
+                    <div class="friend-name">Senxos</div>
+                </div>
+                <div class="friend-card">
+                    <div class="friend-avatar">
+                        <img src="https://via.placeholder.com/55" alt="Friend">
+                    </div>
+                    <div class="friend-name">levisimp</div>
+                </div>
+            </div>
+
+            <!-- Continue Playing Section -->
+            <div class="section-bar">
+                <h2>Continue</h2>
+                <a href="#" class="see-all-link">See All &rarr;</a>
+            </div>
+            <div class="home-games-grid">
+                <a href="game-detail.html" class="home-game-card">
+                    <img src="https://via.placeholder.com/120" alt="FNAF">
+                    <div class="home-game-info">
+                        <div class="home-game-title">Five Nights At Treasure Island</div>
+                        <div class="home-game-stats">👍 43% 👤 0</div>
+                    </div>
+                </a>
+                <a href="game-detail.html" class="home-game-card">
+                    <img src="https://via.placeholder.com/120" alt="Doge Tycoon">
+                    <div class="home-game-info">
+                        <div class="home-game-title">Dogecoin Mining Tycoon</div>
+                        <div class="home-game-stats">👍 90% 👤 4.2K</div>
+                    </div>
+                </a>
+                <a href="game-detail.html" class="home-game-card">
+                    <img src="https://via.placeholder.com/120" alt="Sitting Simulator">
+                    <div class="home-game-info">
+                        <div class="home-game-title">sitting simulator</div>
+                        <div class="home-game-stats">👍 44% 👤 43</div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Role-playing Section -->
+            <div class="section-bar">
+                <h2>Role-playing</h2>
+                <a href="#" class="see-all-link">See All &rarr;</a>
+            </div>
+            <div class="home-games-grid">
+                <a href="game-detail.html" class="home-game-card">
+                    <img src="https://via.placeholder.com/120" alt="Brookhaven">
+                    <div class="home-game-info">
+                        <div class="home-game-title">Brookhaven 🏡RP</div>
+                        <div class="home-game-stats">👍 89% 👤 24.1K</div>
+                    </div>
+                </a>
+                <a href="game-detail.html" class="home-game-card">
+                    <img src="https://via.placeholder.com/120" alt="Adopt Me">
+                    <div class="home-game-info">
+                        <div class="home-game-title">Adopt Me!</div>
+                        <div class="home-game-stats">👍 85% 👤 18.5K</div>
+                    </div>
+                </a>
+            </div>
+
+        </main>
+
+        <!-- Right Side Ad Banner -->
+        <aside class="sidebar-right">
+            <div class="ad-box-vertical">
+                160x600<br>Advertisement
+            </div>
+        </aside>
+
+    </div>
+
+</body>
+</html>
