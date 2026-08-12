@@ -538,21 +538,50 @@
 
     </div>
 
-    <script>
-        // Set dynamic username from path /users/:username/profile
+   <script>
+    async function loadUserProfile() {
         const pathSegments = window.location.pathname.split('/').filter(Boolean);
-        let username = "EBURG";
+        const userIdOrName = pathSegments[1]; // Gets the '12345' or 'EBURG' from /users/12345/profile
 
-        if (pathSegments.length >= 2 && pathSegments[0] === 'users') {
-            username = pathSegments[1];
+        if (!userIdOrName) {
+            window.location.href = '/404';
+            return;
         }
 
-        document.getElementById('profile-username').innerText = username;
-        document.title = `${username}'s Profile - EBURG`;
+        try {
+            // Fetch real user data from your Vercel serverless API or Redis database
+            const res = await fetch(`/api/get-user?id=${encodeURIComponent(userIdOrName)}`);
+            
+            // If the user does NOT exist in your database
+            if (!res.ok) {
+                document.body.innerHTML = `
+                    <div style="text-align: center; padding: 100px; font-family: sans-serif;">
+                        <img src="https://raw.githubusercontent.com/EBURGG/site/refs/heads/main/placeholders/notfound.png" style="max-width: 500px; width: 100%;">
+                        <h2 style="margin-top: 20px;">User Not Found</h2>
+                        <p>The user specified does not exist in EBURG.</p>
+                        <a href="/home" style="color: #0074bd;">Go back Home</a>
+                    </div>
+                `;
+                return;
+            }
 
-        // Load local logged-in user into header
-        const currentUser = localStorage.getItem('eburg_user') || 'Guest';
-        document.querySelectorAll('.user-display-name').forEach(el => el.innerText = currentUser);
-    </script>
+            const userData = await res.json();
+
+            // Populate page with REAL data from database
+            document.getElementById('profile-username').innerText = userData.username;
+            document.getElementById('profile-status').innerText = `"${userData.status || 'Welcome to EBURG!'}"`;
+            document.title = `${userData.username}'s Profile - EBURG`;
+
+        } catch (err) {
+            console.error("Error loading profile:", err);
+        }
+    }
+
+    loadUserProfile();
+
+    // Set logged-in user in header
+    const currentUser = localStorage.getItem('eburg_user') || 'Guest';
+    document.querySelectorAll('.user-display-name').forEach(el => el.innerText = currentUser);
+</script>
 </body>
 </html>
