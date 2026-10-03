@@ -277,7 +277,7 @@ Roblox.Endpoints.Urls = Roblox.Endpoints.Urls || {};
             
 
 <div class="collapse navbar-collapse col-sm-6" id="LandingNavbar" ng-modules="roblox.formEvents" >
-    <form name="loginForm" action="https://eburg.vercel.app/newlogin" id="LogInForm" class="navbar-form form-inline navbar-right" method="post" role="form" rbx-form-context context="RollerCoaster" novalidate>
+    <form name="loginForm" action="#" id="LogInForm" class="navbar-form form-inline navbar-right" method="post" role="form" rbx-form-context context="RollerCoaster" novalidate>
         <div class="form-group" id="LoginUsernameParent">
             <input id="LoginUsername" type="text" placeholder="Username" class="form-control" name="username" rbx-form-interaction autofocus="autofocus" />
         </div>
@@ -771,7 +771,7 @@ Roblox.Endpoints.Urls = Roblox.Endpoints.Urls || {};
                     <p id="signup-GenderInputValidation" class="form-control-label input-validation text-error" ng-bind="(badSubmit && !(signup.gender == 2 || signup.gender == 3)) ? 'Gender is required' : ''"></p>
                 </div>
             </div>
-            <button id="signup-button" type="button" tabindex="9" class="btn-primary-md signup-submit-button" rbx-form-interaction name="signupSubmit" ng-disabled="isSubmitting" data-signup-api-url="https://api.roblox.com/signup/v1" ng-click="submitSignup($event)" ng-keypress="submitSignup($event)">Sign Up</button>
+            <button id="signup-button" type="button" tabindex="9" class="btn-primary-md signup-submit-button" rbx-form-interaction name="signupSubmit" ng-disabled="isSubmitting" data-signup-api-url="https://api.roblox.com/signup/v1" >Sign Up</button>
             <noscript>
                 <div class="text-danger">
                     <strong>JavaScript is required to submit this form.</strong>
@@ -1104,5 +1104,101 @@ Roblox.Endpoints.Urls = Roblox.Endpoints.Urls || {};
     <noscript>
         <img src="http://b.scorecardresearch.com/p?c1=2&c2=&c3=&c4=&c5=&c6=&c15=&cv=2.0&cj=1"/>
     </noscript>
+    <script>
+        // oldex.html authentication behavior, keeping index.html's existing visuals unchanged.
+        (function () {
+            // Redirect if already signed in.
+            try {
+                if (localStorage.getItem('eburg_user')) {
+                    window.location.href = '/home';
+                    return;
+                }
+            } catch (err) {}
+
+            function showSignupError(message) {
+                var errorBox = document.getElementById('GeneralErrorText');
+                if (errorBox) {
+                    errorBox.textContent = message;
+                    errorBox.style.display = 'block';
+                } else {
+                    alert(message);
+                }
+            }
+
+            // oldex.html login: store the entered username locally and go to /home.
+            var loginForm = document.getElementById('LogInForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+
+                    var user = document.getElementById('LoginUsername').value.trim();
+                    if (user) {
+                        try {
+                            localStorage.setItem('eburg_user', user);
+                        } catch (err) {}
+                        window.location.href = '/home';
+                    }
+                }, true);
+            }
+
+            // oldex.html signup: validate password fields, create the account through
+            // /api/signup, save the username locally, then go to /home.
+            var signupButton = document.getElementById('signup-button');
+            if (signupButton) {
+                signupButton.addEventListener('click', async function (e) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+
+                    var username = document.getElementById('signup-username').value.trim();
+                    var password = document.getElementById('signup-password').value;
+                    var confirmPassword = document.getElementById('signup-password-confirm').value;
+
+                    if (password.length < 8) {
+                        showSignupError('Password must be at least 8 characters.');
+                        return;
+                    }
+
+                    if (password !== confirmPassword) {
+                        showSignupError('Passwords do not match.');
+                        return;
+                    }
+
+                    signupButton.disabled = true;
+                    var originalText = signupButton.textContent;
+                    signupButton.textContent = 'Creating account...';
+
+                    try {
+                        var response = await fetch('/api/signup', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                username: username,
+                                password: password
+                            })
+                        });
+
+                        var data = await response.json();
+
+                        if (response.ok) {
+                            try {
+                                localStorage.setItem('eburg_user', username);
+                            } catch (err) {}
+                            window.location.href = '/home';
+                        } else {
+                            showSignupError(data.error || 'Failed to create account.');
+                            signupButton.disabled = false;
+                            signupButton.textContent = originalText;
+                        }
+                    } catch (err) {
+                        showSignupError('Server error. Please try again.');
+                        signupButton.disabled = false;
+                        signupButton.textContent = originalText;
+                    }
+                }, true);
+            }
+        })();
+    </script>
+
 </body>
 </html>
