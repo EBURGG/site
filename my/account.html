@@ -694,6 +694,18 @@ Roblox.Endpoints.Urls['/my/settings/json'] = 'https://eburg.vercel.app/my/settin
     };
 </script>
 
+<script type="text/javascript">
+(function () {
+    try {
+        if (!(localStorage.getItem("eburg_user") || "").trim()) {
+            window.location.replace("/newlogin");
+        }
+    } catch (e) {
+        window.location.replace("/newlogin");
+    }
+})();
+</script>
+
 </head>
 <body id="rbx-body"
       class="rbx-body    gotham-font"
@@ -907,7 +919,7 @@ Roblox.Endpoints.Urls['/my/settings/json'] = 'https://eburg.vercel.app/my/settin
                         </a>
                     </li>
                     <li>
-                        <a href="https:/eburg.vercel.app/users/{{userid}}/inventory" id="nav-inventory" class="dynamic-overflow-container text-nav">
+                        <a href="https://eburg.vercel.app/users/{{userid}}/inventory" id="nav-inventory" class="dynamic-overflow-container text-nav">
                             <div><span class="icon-nav-inventory"></span></div>
                             <span class="font-header-2 dynamic-width-item">Inventory</span>
                         </a>
@@ -2406,6 +2418,267 @@ function checkRobloxInstall() {
 
 
     <script onerror='Roblox.BundleDetector && Roblox.BundleDetector.reportBundleError(this)' data-monitor='true' data-bundlename='pageEnd' type='text/javascript' src='https://js.rbxcdn.com/7e42bd8acc22cb6b98926ccd04832d9c.js.gzip'></script>
+
+
+<script type="text/javascript">
+(function () {
+    "use strict";
+
+    var LOGIN_PATH = "/newlogin";
+    var HOME_PATH = "/home";
+    var USERNAME_KEY = "eburg_user";
+    var USER_ID_KEY = "eburg_user_id";
+
+    function getStoredUsername() {
+        try {
+            return (localStorage.getItem(USERNAME_KEY) || "").trim();
+        } catch (e) {
+            return "";
+        }
+    }
+
+    function getStoredUserId() {
+        try {
+            return (localStorage.getItem(USER_ID_KEY) || "").trim();
+        } catch (e) {
+            return "";
+        }
+    }
+
+    var username = getStoredUsername();
+
+    // Settings is a logged-in page. Do this before the legacy page scripts
+    // can attempt to initialize an unauthenticated account.
+    if (!username) {
+        window.location.replace(LOGIN_PATH);
+        return;
+    }
+
+    function rememberUserId(id) {
+        if (id === null || typeof id === "undefined") {
+            return "";
+        }
+        var value = String(id).trim();
+        if (!value) {
+            return "";
+        }
+        try {
+            localStorage.setItem(USER_ID_KEY, value);
+        } catch (e) {}
+        return value;
+    }
+
+    function findUserId(data) {
+        if (!data || typeof data !== "object") {
+            return "";
+        }
+
+        var directKeys = [
+            "UserId", "userId", "userid", "id", "Id",
+            "userID", "UserID"
+        ];
+
+        for (var i = 0; i < directKeys.length; i++) {
+            if (data[directKeys[i]] !== null &&
+                typeof data[directKeys[i]] !== "undefined" &&
+                String(data[directKeys[i]]).trim()) {
+                return String(data[directKeys[i]]).trim();
+            }
+        }
+
+        var nestedKeys = ["user", "User", "data", "account", "accountData", "profile"];
+        for (var j = 0; j < nestedKeys.length; j++) {
+            if (data[nestedKeys[j]]) {
+                var nestedId = findUserId(data[nestedKeys[j]]);
+                if (nestedId) {
+                    return nestedId;
+                }
+            }
+        }
+
+        return "";
+    }
+
+    function replacePlaceholders(userId) {
+        var replacementId = userId || getStoredUserId() || "";
+
+        var walker = document.createTreeWalker(
+            document.body,
+            NodeFilter.SHOW_TEXT,
+            null,
+            false
+        );
+        var nodes = [];
+        var node;
+
+        while ((node = walker.nextNode())) {
+            if (node.nodeValue.indexOf("{{username}}") !== -1 ||
+                node.nodeValue.indexOf("{{userid}}") !== -1) {
+                nodes.push(node);
+            }
+        }
+
+        nodes.forEach(function (textNode) {
+            textNode.nodeValue = textNode.nodeValue
+                .split("{{username}}").join(username)
+                .split("{{userid}}").join(replacementId);
+        });
+
+        var elements = document.body.getElementsByTagName("*");
+        for (var i = 0; i < elements.length; i++) {
+            var element = elements[i];
+
+            for (var j = 0; j < element.attributes.length; j++) {
+                var attr = element.attributes[j];
+                if (attr.value.indexOf("{{username}}") !== -1 ||
+                    attr.value.indexOf("{{userid}}") !== -1) {
+                    attr.value = attr.value
+                        .split("{{username}}").join(username)
+                        .split("{{userid}}").join(replacementId);
+                }
+            }
+        }
+    }
+
+    function extractUserIdFromMeta() {
+        var meta = document.querySelector('meta[name="user-data"]');
+        if (!meta) {
+            return "";
+        }
+
+        var metaName = (meta.getAttribute("data-name") || "").trim();
+        var metaId = (meta.getAttribute("data-userid") || "").trim();
+
+        // The archived page contains a hard-coded user record. Only trust it
+        // when its username matches the currently logged-in EBURG username.
+        if (metaId && metaName && metaName.toLowerCase() === username.toLowerCase()) {
+            return metaId;
+        }
+
+        return "";
+    }
+
+    async function resolveUserId() {
+        var cached = getStoredUserId();
+        if (cached) {
+            replacePlaceholders(cached);
+            return cached;
+        }
+
+        var metaId = extractUserIdFromMeta();
+        if (metaId) {
+            rememberUserId(metaId);
+            replacePlaceholders(metaId);
+            return metaId;
+        }
+
+        // Try the Eburg settings endpoint first. It is already declared by
+        // this page and may return UserId/Name data for the active account.
+        var candidates = [
+            "/my/settings/json",
+            "/users/" + encodeURIComponent(username) + "/profile",
+            "/api/user/" + encodeURIComponent(username),
+            "/api/users/" + encodeURIComponent(username),
+            "/api/user?username=" + encodeURIComponent(username),
+            "/api/users?username=" + encodeURIComponent(username),
+            "/api/profile?username=" + encodeURIComponent(username)
+        ];
+
+        for (var i = 0; i < candidates.length; i++) {
+            try {
+                var response = await fetch(candidates[i], {
+                    method: "GET",
+                    credentials: "same-origin",
+                    headers: { "Accept": "application/json" }
+                });
+
+                if (!response.ok) {
+                    continue;
+                }
+
+                var contentType = (response.headers.get("content-type") || "").toLowerCase();
+                var id = "";
+
+                if (contentType.indexOf("application/json") !== -1) {
+                    var data = await response.json();
+                    id = findUserId(data);
+                } else {
+                    var html = await response.text();
+                    var match = html.match(/data-userid=["']([^"']+)["']/i);
+                    if (match) {
+                        id = match[1];
+                    }
+                }
+
+                if (id) {
+                    rememberUserId(id);
+                    replacePlaceholders(id);
+                    return id;
+                }
+            } catch (e) {
+                // Try the next compatible Eburg endpoint.
+            }
+        }
+
+        // Keep the username working even if the installation does not expose
+        // a user-ID endpoint yet. {{userid}} will remain empty rather than
+        // pointing at another user's profile.
+        replacePlaceholders("");
+        return "";
+    }
+
+    function setupLogout() {
+        var logout = document.querySelector('[data-behavior="logout"]');
+        if (!logout) {
+            return;
+        }
+
+        logout.addEventListener("click", function (event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+            try {
+                localStorage.removeItem(USERNAME_KEY);
+                localStorage.removeItem(USER_ID_KEY);
+            } catch (e) {}
+
+            window.location.href = LOGIN_PATH;
+        }, true);
+    }
+
+    function patchEburgLinks() {
+        var links = document.querySelectorAll("a[href]");
+        for (var i = 0; i < links.length; i++) {
+            var href = links[i].getAttribute("href");
+            if (!href) {
+                continue;
+            }
+
+            href = href
+                .replace(/^http:\/\/eburg\.vercel\.app/i, "https://eburg.vercel.app")
+                .replace(/^https?:\/eburg\.vercel\.app/i, "https://eburg.vercel.app")
+                .replace(/^https:\/\/https:\/\//i, "https://");
+
+            links[i].setAttribute("href", href);
+        }
+    }
+
+    // Run the placeholder work after the page has parsed so the existing
+    // markup/CSS remains untouched.
+    function initializeSettings() {
+        setupLogout();
+        patchEburgLinks();
+        replacePlaceholders(getStoredUserId() || extractUserIdFromMeta());
+        resolveUserId();
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initializeSettings);
+    } else {
+        initializeSettings();
+    }
+})();
+</script>
 
 </body>
 </html>
