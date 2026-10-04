@@ -3,5 +3,20 @@
   "rewrites": [
     { "source": "/users/:id/profile", "destination": "/profile" },
     { "source": "/users/:id", "destination": "/profile" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "Cross-Origin-Embedder-Policy",
+          "value": "require-corp"
+        }
+      ]
+    }
   ]
 }
